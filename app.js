@@ -3,19 +3,18 @@ document.getElementById('startGameBtn').addEventListener('click', startGame);
 document.getElementById('reloadBtn').addEventListener('click', reloadGame);
 
 const locations = [
-    'Bãi biển', 'Trung tâm thương mại', 'Sở cảnh sát', 'Khu rừng', 'Phòng học', 
+    'Bãi biển', 'Trung tâm thương mại', 'Sở cảnh sát', 'Khu rừng', 'Phòng học',
     'Trại lính', 'Nhà hát', 'Quán cà phê', 'Công viên', 'Sân bay',
-    'Rạp chiếu phim', 'Thư viện', 'Trường học', 'Bệnh viện', 'Siêu thị', 
-    'Khu vui chơi giải trí', 'Nhà hàng', 'Trạm xăng', 'Đền thờ', 'Câu lạc bộ đêm', 
+    'Rạp chiếu phim', 'Thư viện', 'Trường học', 'Bệnh viện', 'Siêu thị',
+    'Khu vui chơi giải trí', 'Nhà hàng', 'Trạm xăng', 'Đền thờ', 'Câu lạc bộ đêm',
     'Nhà máy', 'Phòng khám nha khoa', 'Phòng tập gym', 'Chợ đêm', 'Nhà hát',
-    'Khu bảo tồn động vật', 'Chuyến tàu', 'Bến cảng', 'Công trường', 'Sân vận động', 
+    'Khu bảo tồn động vật', 'Chuyến tàu', 'Bến cảng', 'Công trường', 'Sân vận động',
     'Nhà thờ', 'Lâu đài', 'Sân golf', 'Khu căn hộ', 'Tàu du lịch', 'Trung tâm y tế',
-    'Vườn thú', 'Khu nghỉ dưỡng', 'Bảo tàng', 'Công viên nước', 'Quảng trường', 
-    'Phòng thí nghiệm', 'Học viện quân sự', 'Thành phố dưới nước', 'Đảo hoang', 
-    'Trung tâm triển lãm', 'Văn phòng làm việc', 'Phố cổ', 'Làng chài', 'Khu phố cổ', 
+    'Vườn thú', 'Khu nghỉ dưỡng', 'Bảo tàng', 'Công viên nước', 'Quảng trường',
+    'Phòng thí nghiệm', 'Học viện quân sự', 'Thành phố dưới nước', 'Đảo hoang',
+    'Trung tâm triển lãm', 'Văn phòng làm việc', 'Phố cổ', 'Làng chài', 'Khu phố cổ',
     'Khách sạn', 'Trại huấn luyện'
 ];
-
 
 function startGame() {
     const numPlayers = parseInt(document.getElementById('numPlayers').value);
@@ -26,7 +25,7 @@ function startGame() {
 
     // Chọn ngẫu nhiên một địa điểm
     const location = locations[Math.floor(Math.random() * locations.length)];
-    
+
     // Chọn một spy ngẫu nhiên
     const spyIndex = Math.floor(Math.random() * numPlayers);
 
@@ -50,7 +49,8 @@ function startGame() {
         const playerDiv = document.createElement('div');
         playerDiv.classList.add('player-item');
         playerDiv.textContent = player.name;
-        playerDiv.addEventListener('click', () => showPlayerInfo(player, location));
+        playerDiv.setAttribute('data-player-index', index); // Đánh dấu chỉ số người chơi
+        playerDiv.addEventListener('click', () => showPlayerInfo(player, location, playerDiv));
 
         playersListDiv.appendChild(playerDiv);
     });
@@ -59,13 +59,17 @@ function startGame() {
     document.getElementById('reloadBtn').style.display = 'inline-block';
 }
 
-function showPlayerInfo(player, location) {
-    // Ẩn địa điểm nếu người chơi là Spy
+function showPlayerInfo(player, location, playerDiv) {
+    // Nếu người chơi là Spy, sẽ không hiển thị địa điểm
     const playerInfo = player.role === 'Spy' 
-        ? `${player.name} - Vai trò: ${player.role}\nĐịa điểm: Unknown` 
+        ? `${player.name} - Vai trò: ${player.role}\nBạn là Spy, không biết địa điểm!` 
         : `${player.name} - Vai trò: ${player.role}\nĐịa điểm: ${location}`;
 
     alert(playerInfo);
+
+    // Sau khi hiển thị thông tin, vô hiệu hóa nút hiển thị của người chơi
+    playerDiv.style.pointerEvents = 'none'; // Disable clicking on the player div
+    playerDiv.style.opacity = 0.5; // Thêm hiệu ứng mờ để dễ nhận biết là đã bị vô hiệu hóa
 
     // Kiểm tra xem đã hiển thị hết người chơi chưa
     const remainingPlayers = document.querySelectorAll('.player-item');
